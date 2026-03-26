@@ -1,0 +1,190 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-lite",
+        "options": {}
+      },
+      "id": "fd4889c3-09b8-4af5-9d46-55dfa8d022ed",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        900,
+        560
+      ],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TPyx3VTWPR2Y1aZx",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.coingecko.com/api/v3/coins/markets",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "vs_currency",
+              "value": "usd"
+            },
+            {
+              "name": "order",
+              "value": "price_change_percentage_24h_desc"
+            },
+            {
+              "name": "per_page",
+              "value": "1"
+            },
+            {
+              "name": "page",
+              "value": "25"
+            },
+            {
+              "name": "sparkline",
+              "value": "false"
+            },
+            {
+              "name": "price_change_percentage",
+              "value": "24h"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "38e254c9-375e-4eca-8335-58a144b28cec",
+      "name": "HTTP Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "id": "d73f6636-1555-4b54-85d6-f46ee13cfe93",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "aakanksha.kumar29@gmail.com",
+        "subject": "Crypto news",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "id": "49dce220-e70f-4aa5-80bb-8518ae9d0d45",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        300
+      ],
+      "webhookId": "465c9602-d731-4c44-8df9-2843e7fd8d61",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "6hIPlUnXreYCcivW",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a crypto market assistant.\n\n\nFrom the crypto data provided in the input:\n1. Identify the highest gaining coins\n2. Identify the biggest losers\n3. Suggest 3 coins that could be good buying opportunities\n4. Also tell me how BTC,ETH,NEAR AND ONDO are doing along with their prices that they are trading at the time you searching the web.\nReturn the result as a short daily crypto report.\n\nRespond naturally to the user message.\nAlways reply in plain text.\nDo not return JSON or code blocks.\n",
+        "options": {}
+      },
+      "id": "fe62f829-4ec3-4773-a842-10ec3d7ed591",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1060,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Asia/Kolkata",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "f13cd4e4-8462-4e84-ab20-c157cb0732ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "215644181f10408f72559052c13c87b2a58b0a7fc0f89b0d2a716cc2c34fcbd8"
+  },
+  "id": "STWOP1Mgl0BawLFA",
+  "tags": []
+}
