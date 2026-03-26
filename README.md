@@ -35,6 +35,6 @@ insights directly to your inbox.
 ---
 
 ## 🚀 Future Work
-- Let users choose which coins to track and letting the LLM Model choose which API Key to fetch.
+- Letting users choose which coins to track and letting the LLM Model choose which API Key to fetch.
 - Add price drop/spike alerts
 - Support Telegram or WhatsApp delivery
